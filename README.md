@@ -11,7 +11,7 @@ It shows a power of cloud architecture using Azure and Microsoft Fabric with Bro
 
 # Orchestration: Microsoft Fabric Pipeline triggers the ingestion and manages the workflow.
 
-# Transformation: Dataflow Gen2 cleans the data, loading it into Lakehouse with 2 silver tables which are ready to be analysed.
+# Transformation: Dataflow Gen2 cleans the data, loading it into Lakehouse.
 
 # Screenshots:
 Deployed lake storage and functionapp:
