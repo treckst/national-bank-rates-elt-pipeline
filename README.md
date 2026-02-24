@@ -1,5 +1,5 @@
 # national-bank-rates-elt-pipeline
-Automated cloud ELT-pipeline for data ingestion using Azure Function (Time-Trigger) and Microsoft Fabric.
+Automated ELT pipeline for data ingestion using Azure Function (Time-Trigger) and Fabric.
 
 It's a project that automates the ingestion, transformation, and storage of data from the National Bank of Poland API (https://api.nbp.pl/).
 
@@ -9,9 +9,9 @@ It shows a power of cloud architecture using Azure and Microsoft Fabric with Bro
 
 # Ingestion: Raw data is stored in Azure Data Lake Storage Gen2 in the Bronze Container as partitioned Parquet files to optimize cost.
 
-# Orchestration: Microsoft Fabric Pipeline triggers the ingestion and manages the workflow.
+#Microsoft Fabric Pipeline triggers the ingestion by time_trigger function and manages the workflow.
 
-# Transformation: Dataflow Gen2 cleans the data, loading it into Lakehouse.
+# Transformation: Dataflow Gen2 cleans the data, loads it into the Lakehouse.
 
 # Screenshots:
 Deployed lake storage and functionapp:
