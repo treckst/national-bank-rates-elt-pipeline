@@ -10,29 +10,28 @@ app = func.FunctionApp()
 @app.timer_trigger(schedule="0 */5 * * * *", arg_name="timer")
 def NBPExtract(timer: func.TimerRequest):
     today = date.today().isoformat()
-    acc_name = "smogwatchstorage1"
-    acc_key = os.environ['STORAGE_ACCOUNT_KEY']
+    name = "smogwatchstorage1"
+    key = os.environ['STORAGE_ACCOUNT_KEY']
     
     try:
-        # extracting rates data
+        # exchange rates
         r = requests.get("https://api.nbp.pl/api/exchangerates/tables/A/")
         data = r.json()[0]
         df = pd.DataFrame(data['rates'])
-        df['effectiveDate'] = data['effectiveDate']
         df['load_date'] = today
+        df['effectiveDate'] = data['effectiveDate']
 
-        # loading raw rates data
-        path = f"abfss://bronze@{acc_name}.dfs.core.windows.net/nbp/rates/date={today}/data.parquet"
-        df.to_parquet(path, storage_options={'account_name': acc_name, 'account_key': acc_key})
+        # into bronze container
+        path = f"abfss://bronze@{name}.dfs.core.windows.net/nbp/rates/date={today}/data.parquet"
+        df.to_parquet(path, storage_options={'account_name': name, 'account_key': key})
 
-        # extracting gold data
+        # gold price
         r_gold = requests.get("https://api.nbp.pl/api/cenyzlota")
-        g_data = r_gold.json()[0]
-        df_gold = pd.DataFrame([{'date': g_data['data'], 'price': g_data['cena'], 'load_date': today}])
+        gold_data = r_gold.json()[0]
+        df_gold = pd.DataFrame([{'date': gold_data['data'], 'price': gold_data['cena'], 'load_date': today}])
 
-        # loading raw gold data
-        path_g = f"abfss://bronze@{acc_name}.dfs.core.windows.net/nbp/gold/date={today}/data.parquet"
-        df_gold.to_parquet(path_g, storage_options={'account_name': acc_name, 'account_key': acc_key})
+        path_gold = f"abfss://bronze@{name}.dfs.core.windows.net/nbp/gold/date={today}/data.parquet"
+        df_gold.to_parquet(path_gold, storage_options={'account_name': name, 'account_key': key})
         
-    except Exception as e:
-        print(f"Extraction failed: {e}")
+    except Exception:
+        print(f"Extraction failed:")
